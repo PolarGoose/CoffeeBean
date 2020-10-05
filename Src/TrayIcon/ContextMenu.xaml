@@ -1,0 +1,14 @@
+<forms:ContextMenuStrip x:Class="CoffeeBean.TrayIcon.ContextMenu"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms">
+    <forms:ContextMenuStrip.Items>
+        <forms:ToolStripMenuItem Text="About">
+            <forms:ToolStripMenuItem.DropDownItems>
+                <forms:ToolStripMenuItem Click="About_OnClick" x:Name="VersionMenuItem" />
+            </forms:ToolStripMenuItem.DropDownItems>
+        </forms:ToolStripMenuItem>
+        <forms:ToolStripSeparator />
+        <forms:ToolStripMenuItem Text="Close" Click="Close_OnClick" />
+    </forms:ContextMenuStrip.Items>
+</forms:ContextMenuStrip>
