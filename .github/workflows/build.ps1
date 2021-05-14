@@ -14,9 +14,9 @@ Function CheckReturnCodeOfPreviousCommand($msg) {
     }
 }
 
-Function CreateZipArchive($file, $archiveFullName) {
-    Info "Create zip archive: `n '$archiveFullName' from file `n '$file'"
-    Compress-Archive -Force -Path $file -DestinationPath $archiveFullName
+Function CreateZipArchive($dir) {
+    Info "Create zip archive `n ${dir}.zip"
+    Compress-Archive -Force -Path "$dir/*.exe" -DestinationPath "${dir}.zip"
 }
 
 Function CopyFile($file, $dstFolder) {
@@ -25,26 +25,36 @@ Function CopyFile($file, $dstFolder) {
     Copy-Item -Force -Path $file -Destination $dstFolder > $null
 }
 
-Function GetInformationalVersion() {
-    $gitCommand = Get-Command -ErrorAction Stop -Name git
+Function GetVersion() {
+    $gitCommand = Get-Command -Name git
 
-    $tag = & $gitCommand describe --exact-match --tags HEAD
+    $nearestTag = & $gitCommand describe --exact-match --tags HEAD
     if(-Not $?) {
-        Info "The commit is not tagged. Use 'v0.0.0-dev' as a version instead"
-        $tag = "v0.0.0-dev"
+        Info "The commit is not tagged. Use 'v0.0-dev' as a version instead"
+        $nearestTag = "v0.0-dev"
     }
 
     $commitHash = & $gitCommand rev-parse --short HEAD
     CheckReturnCodeOfPreviousCommand "Failed to get git commit hash"
 
-    return "$($tag.Substring(1))~$commitHash"
+    return "$($nearestTag.Substring(1))-$commitHash"
 }
 
-Function ExtractVersion($informationalVersion) {
-    if($informationalVersion -match "^([0-9]+\.[0-9]+\.[0-9])\.*") {
-        return $Matches[1]
-    }
-    Error "Failed to extract version from '$informationalVersion'"
+Function Publish($slnFile, $version, $outDir) {
+    Info "Run 'dotnet publish' command: `n slnFile=$slnFile `n version='$version' `n outDir=$outDir"
+
+    $Env:DOTNET_NOLOGO = "true"
+    $Env:DOTNET_CLI_TELEMETRY_OPTOUT = "true"
+    dotnet publish `
+        --runtime win-x86 `
+        --configuration Release `
+        --output $outDir `
+        /property:DebugType=None `
+        /property:Version=$version `
+        $slnFile
+    CheckReturnCodeOfPreviousCommand "'dotnet publish' command failed"
+
+    CreateZipArchive $outDir
 }
 
 Set-StrictMode -Version Latest
@@ -52,26 +62,13 @@ $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 
 $root = Resolve-Path "$PSScriptRoot/../.."
-$projectName = "CoffeeBean"
 $publishDir = "$root/Build/Publish"
-$slnFile = "$root/$projectName.sln"
-$msbuild = Get-Command "C:\Program Files (x86)\Microsoft Visual Studio\2019\*\MSBuild\Current\Bin\MSBuild.exe"
-$informationalVersion = GetInformationalVersion
-$version = ExtractVersion $informationalVersion
+$projectName = "CoffeeBean"
 
-Info "Build project using MSBuild"
-& $msbuild `
-    /property:Version=$version `
-    /property:InformationalVersion=$informationalVersion `
-    /property:DebugType=None `
-    /property:Configuration=Release `
-    /property:Platform=x86 `
-    $slnFile
-CheckReturnCodeOfPreviousCommand "Failed to build the project"
+Info "Remove Publish directory `n $publishDir"
+Remove-Item $publishDir  -Force  -Recurse -ErrorAction SilentlyContinue
 
-CopyFile $root/Build/Release/${projectName}.exe $publishDir
-CreateZipArchive $publishDir/${projectName}.exe $publishDir/${projectName}
-
-if ($LastExitCode -ne 0) {
-    Error "LastExitCode is $LastExitCode at the end of the script. Should be 0"
-}
+Publish `
+    -slnFile $root/$projectName.sln `
+    -version (GetVersion) `
+    -outDir "$publishDir/$projectName"

@@ -1,5 +1,5 @@
+using System;
 using System.Windows.Forms;
-using CoffeeBean.Properties;
 
 namespace CoffeeBean.TrayIcon
 {
@@ -11,7 +11,7 @@ namespace CoffeeBean.TrayIcon
         {
             notifyIcon = new NotifyIcon
             {
-                Icon = Resources.icon,
+                Icon = new System.Drawing.Icon(System.Windows.Application.GetResourceStream(new Uri("/TrayIcon/icon.ico", UriKind.Relative)).Stream),
                 Visible = true,
                 Text = "CoffeeBean",
                 ContextMenuStrip = new ContextMenu(version)
