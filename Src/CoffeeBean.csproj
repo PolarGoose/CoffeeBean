@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -7,10 +7,6 @@
     <UseWindowsForms>true</UseWindowsForms>
     <Platforms>x86</Platforms>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="TrayIcon\icon.ico" />
-  </ItemGroup>
 
   <ItemGroup>
     <Resource Include="TrayIcon\icon.ico" />
