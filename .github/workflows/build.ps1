@@ -14,9 +14,28 @@ Function CheckReturnCodeOfPreviousCommand($msg) {
     }
 }
 
-Function CreateZipArchive($dir) {
-    Info "Create zip archive `n ${dir}.zip"
-    Compress-Archive -Force -Path "$dir/*.exe" -DestinationPath "${dir}.zip"
+Function FindMsBuild() {
+    $vswhereCommand = Get-Command -Name "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+
+    $msbuild = `
+        & $vswhereCommand `
+            -latest `
+            -requires Microsoft.Component.MSBuild `
+            -find MSBuild\**\Bin\MSBuild.exe `
+          | select-object -first 1
+
+    if(!$msbuild)
+    {
+        Error "Can't find MsBuild"
+    }
+
+    Info "MsBuild found: `n $msbuild"
+    return $msbuild
+}
+
+Function CreateZipArchive($fileFullName, $archiveFullName) {
+    Info "Create zip archive `n $archiveFullName from `n $fileFullName"
+    Compress-Archive -Force -Path $fileFullName -DestinationPath $archiveFullName
 }
 
 Function CopyFile($file, $dstFolder) {
@@ -28,33 +47,20 @@ Function CopyFile($file, $dstFolder) {
 Function GetVersion() {
     $gitCommand = Get-Command -Name git
 
-    $nearestTag = & $gitCommand describe --exact-match --tags HEAD
+    $commitTag = & $gitCommand describe --exact-match --tags HEAD
     if(-Not $?) {
         Info "The commit is not tagged. Use 'v0.0-dev' as a version instead"
-        $nearestTag = "v0.0-dev"
+        $commitTag = "v0.0-dev"
     }
 
     $commitHash = & $gitCommand rev-parse --short HEAD
     CheckReturnCodeOfPreviousCommand "Failed to get git commit hash"
 
-    return "$($nearestTag.Substring(1))-$commitHash"
+    return "$($commitTag.Substring(1))-$commitHash"
 }
 
-Function Publish($slnFile, $version, $outDir) {
-    Info "Run 'dotnet publish' command: `n slnFile=$slnFile `n version='$version' `n outDir=$outDir"
-
-    $Env:DOTNET_NOLOGO = "true"
-    $Env:DOTNET_CLI_TELEMETRY_OPTOUT = "true"
-    dotnet publish `
-        --runtime win-x86 `
-        --configuration Release `
-        --output $outDir `
-        /property:DebugType=None `
-        /property:Version=$version `
-        $slnFile
-    CheckReturnCodeOfPreviousCommand "'dotnet publish' command failed"
-
-    CreateZipArchive $outDir
+Function GetInstallerVersion($version) {
+    return $version.Split("-")[0];
 }
 
 Set-StrictMode -Version Latest
@@ -62,13 +68,27 @@ $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 
 $root = Resolve-Path "$PSScriptRoot/../.."
-$publishDir = "$root/Build/Publish"
+$publishDir = "$root/build/Release"
 $projectName = "CoffeeBean"
+$version = GetVersion
+$installerVersion = GetInstallerVersion $version
+$msbuild = FindMsBuild
+
+Info "Version: '$version'. InstallerVersion: '$installerVersion'"
 
 Info "Remove Publish directory `n $publishDir"
 Remove-Item $publishDir  -Force  -Recurse -ErrorAction SilentlyContinue
 
-Publish `
-    -slnFile $root/$projectName.sln `
-    -version (GetVersion) `
-    -outDir "$publishDir/$projectName"
+Info "Build project"
+& $msbuild `
+    /property:RestorePackagesConfig=true `
+    /property:MSBuildWarningsAsMessages=NU1503 `
+    /property:Configuration=Release `
+    /property:DebugType=None `
+    /property:Version=$version `
+    /property:InstallerVersion=$installerVersion `
+    /target:"restore;build" `
+    $root/$projectName.sln
+CheckReturnCodeOfPreviousCommand "build failed"
+
+CreateZipArchive "$publishDir/net461/${projectName}.exe" "$publishDir/${projectName}.zip"

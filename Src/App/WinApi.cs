@@ -7,7 +7,7 @@ namespace CoffeeBean
     {
         // https://www.pinvoke.net/default.aspx/kernel32/SetThreadExecutionState.html
 
-        [FlagsAttribute]
+        [Flags]
         public enum EXECUTION_STATE : uint
         {
             ES_AWAYMODE_REQUIRED = 0x00000040,
@@ -16,6 +16,7 @@ namespace CoffeeBean
             ES_SYSTEM_REQUIRED = 0x00000001
         }
 
+        // https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setthreadexecutionstate
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern EXECUTION_STATE SetThreadExecutionState(EXECUTION_STATE esFlags);
     }
