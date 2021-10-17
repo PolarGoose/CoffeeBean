@@ -14,7 +14,7 @@ namespace CoffeeBean
 
             trayIcon = new NotifyIcon
             {
-                Icon = new System.Drawing.Icon(GetResourceStream(new Uri("/icon.ico", UriKind.Relative)).Stream),
+                Icon = new System.Drawing.Icon(GetResourceStream(new Uri("/Icon/icon.ico", UriKind.Relative)).Stream),
                 Visible = true,
                 Text = "CoffeeBean",
                 ContextMenuStrip = new ContextMenu()

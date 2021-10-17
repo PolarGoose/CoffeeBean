@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -6,7 +6,7 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <Platforms>x86</Platforms>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <ApplicationIcon>Icon\icon.ico</ApplicationIcon>
     <StartupObject>CoffeeBean.EntryPoint</StartupObject>
   </PropertyGroup>
 
@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="icon.ico" />
+    <Resource Include="Icon\icon.ico" />
   </ItemGroup>
 
 </Project>
