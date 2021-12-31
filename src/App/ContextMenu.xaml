@@ -9,7 +9,9 @@
             </forms:ToolStripMenuItem.DropDownItems>
         </forms:ToolStripMenuItem>
         <forms:ToolStripSeparator/>
-        <forms:ToolStripMenuItem Text="Launch at startup" Click="OnLaunchAtStatrup_Click" x:Name="LaunchAtStartupMenuItem"/>
+        <forms:ToolStripMenuItem Text="Enabled" CheckOnClick="true" CheckedChanged="EnabledMenuItem_CheckedChanged" x:Name="EnabledMenuItem" ToolTipText="Shows if screen lock prevention is enabled or not"/>
+        <forms:ToolStripMenuItem Text="Launch at startup" CheckOnClick="true" CheckedChanged="LaunchAtStatrupMenuItem_CheckedChanged" x:Name="LaunchAtStartupMenuItem"/>
+        <forms:ToolStripSeparator/>
         <forms:ToolStripMenuItem Text="Close" Click="Close_OnClick"/>
     </forms:ContextMenuStrip.Items>
 </forms:ContextMenuStrip>

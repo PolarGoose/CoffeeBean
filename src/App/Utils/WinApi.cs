@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace CoffeeBean
+namespace CoffeeBean.Utils
 {
     internal static class WinApi
     {

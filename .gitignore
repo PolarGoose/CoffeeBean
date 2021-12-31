@@ -1,3 +1,4 @@
-/Build/
+/build/
 .vs/
 *.csproj.user
+launchSettings.json

@@ -49,7 +49,7 @@ Function GetVersion() {
 
     $commitTag = & $gitCommand describe --exact-match --tags HEAD
     if(-Not $?) {
-        Info "The commit is not tagged. Use 'v0.0-dev' as a version instead"
+        Info "The commit is not tagged. Use 'v0.0-dev' as a tag instead"
         $commitTag = "v0.0-dev"
     }
 
@@ -76,9 +76,6 @@ $msbuild = FindMsBuild
 
 Info "Version: '$version'. InstallerVersion: '$installerVersion'"
 
-Info "Remove Publish directory `n $publishDir"
-Remove-Item $publishDir  -Force  -Recurse -ErrorAction SilentlyContinue
-
 Info "Build project"
 & $msbuild `
     /property:RestorePackagesConfig=true `
@@ -91,4 +88,4 @@ Info "Build project"
     $root/$projectName.sln
 CheckReturnCodeOfPreviousCommand "build failed"
 
-CreateZipArchive "$publishDir/net461/${projectName}.exe" "$publishDir/${projectName}.zip"
+CreateZipArchive "$publishDir/net461/${projectName}.exe" "$publishDir/${projectName}.exe.zip"
