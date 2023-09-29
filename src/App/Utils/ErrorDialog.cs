@@ -1,12 +1,11 @@
 using System.Windows;
 
-namespace CoffeeBean.Utils
+namespace CoffeeBean.Utils;
+
+internal static class ErrorDialog
 {
-    internal static class ErrorDialog
+    public static void Show(string text)
     {
-        public static void Show(string text)
-        {
-            MessageBox.Show(text, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+        MessageBox.Show(text, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
     }
 }

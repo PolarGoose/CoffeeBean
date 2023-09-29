@@ -2,11 +2,11 @@ on: push
 
 jobs:
   build:
-    runs-on: windows-2022
+    runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: .github/workflows/build.ps1
-      - uses: actions/upload-artifact@v2
+      - uses: actions/checkout@v3
+      - run: .\build.ps1
+      - uses: actions/upload-artifact@v3
         with:
           name: Build artifacts
           path: |

@@ -1,4 +1,5 @@
 /build/
 .vs/
+.idea/
 *.csproj.user
 launchSettings.json

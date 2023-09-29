@@ -1,44 +1,29 @@
 using System;
 using System.Collections.Generic;
 
-namespace CoffeeBean.Utils
+namespace CoffeeBean.Utils;
+
+internal readonly struct CommandLineArguments
 {
-    internal struct CommandLineArguments
-    {
-        public bool? IsScreenLockEnabled { get; }
+    public bool? IsScreenLockEnabled { get; }
 
-        public CommandLineArguments(bool? isScreenLockEnabled)
-        {
-            IsScreenLockEnabled = isScreenLockEnabled;
-        }
+    public CommandLineArguments(bool? isScreenLockEnabled)
+    {
+        IsScreenLockEnabled = isScreenLockEnabled;
     }
+}
 
-    internal static class CommandLineParser
+internal static class CommandLineParser
+{
+    public static CommandLineArguments Parse(IReadOnlyList<string> args)
     {
-        public static CommandLineArguments Parse(IReadOnlyList<string> args)
+        return args.Count switch
         {
-            if (args.Count == 0)
-            {
-                return new CommandLineArguments(null);
-            }
-
-            if (args.Count == 1)
-            {
-                if (args[0] == "enable")
-                {
-                    return new CommandLineArguments(true);
-                }
-                else if (args[0] == "disable")
-                {
-                    return new CommandLineArguments(false);
-                }
-                else
-                {
-                    throw new Exception($"Unknown command line argument '{args[0]}'");
-                }
-            }
-
-            throw new Exception($"Too many command line arguments are provided");
-        }
+            0 => new CommandLineArguments(null),
+            1 when args[0] == "enable" => new CommandLineArguments(true),
+            1 when args[0] == "disable" => new CommandLineArguments(false),
+            1 => throw new Exception($"Unknown command line argument '{args[0]}'"),
+            _ => throw new Exception("Too many command line arguments are provided")
+        };
     }
 }

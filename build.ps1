@@ -67,7 +67,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 
-$root = Resolve-Path "$PSScriptRoot/../.."
+$root = Resolve-Path $PSScriptRoot
 $publishDir = "$root/build/Release"
 $projectName = "CoffeeBean"
 $version = GetVersion
@@ -88,4 +88,4 @@ Info "Build project"
     $root/$projectName.sln
 CheckReturnCodeOfPreviousCommand "build failed"
 
-CreateZipArchive "$publishDir/net461/${projectName}.exe" "$publishDir/${projectName}.exe.zip"
+CreateZipArchive "$publishDir/net462/${projectName}.exe" "$publishDir/${projectName}.exe.zip"

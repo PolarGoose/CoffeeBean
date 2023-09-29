@@ -7,5 +7,6 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Version>0.0-dev</Version>
     <InstallerVersion>0.0</InstallerVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 </Project>
