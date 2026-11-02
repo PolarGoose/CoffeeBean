@@ -1,0 +1,26 @@
+<local:NotifyIconComponent x:Class="CoffeeBean.NotifyIcon"
+                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:local="clr-namespace:CoffeeBean"
+                           xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms">
+  <local:NotifyIconComponent.TrayIcon>
+    <forms:NotifyIcon Text="CoffeeBean" Visible="true" MouseClick="TrayIcon_MouseClick">
+      <forms:NotifyIcon.ContextMenuStrip>
+        <forms:ContextMenuStrip x:Name="TrayMenu">
+          <forms:ContextMenuStrip.Items>
+            <forms:ToolStripMenuItem Text="Enabled" CheckOnClick="true" CheckedChanged="EnabledMenuItem_CheckedChanged" x:Name="EnabledMenuItem" ToolTipText="Shows if screen lock prevention is enabled or not"/>
+            <forms:ToolStripMenuItem Text="Launch at startup" CheckOnClick="true" CheckedChanged="LaunchAtStartupMenuItem_CheckedChanged" x:Name="LaunchAtStartupMenuItem"/>
+            <forms:ToolStripMenuItem Text="Launch in enabled state" CheckOnClick="true" CheckedChanged="LaunchEnabledMenuItem_CheckedChanged" x:Name="LaunchEnabledMenuItem" ToolTipText="Start the tool in an enabled state by default"/>
+            <forms:ToolStripSeparator/>
+            <forms:ToolStripMenuItem Text="About">
+              <forms:ToolStripMenuItem.DropDownItems>
+                <forms:ToolStripMenuItem Text="{x:Static local:NotifyIcon.VersionMenuText}" Click="About_OnClick" x:Name="VersionMenuItem"/>
+              </forms:ToolStripMenuItem.DropDownItems>
+            </forms:ToolStripMenuItem>
+            <forms:ToolStripMenuItem Text="Close" Click="Close_OnClick"/>
+          </forms:ContextMenuStrip.Items>
+        </forms:ContextMenuStrip>
+      </forms:NotifyIcon.ContextMenuStrip>
+    </forms:NotifyIcon>
+  </local:NotifyIconComponent.TrayIcon>
+</local:NotifyIconComponent>

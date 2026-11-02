@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/Files/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".github/workflows/main.yaml" />
+    <File Path=".gitignore" />
+    <File Path="build.ps1" />
+    <File Path="README.md" />
+    <File Path="src/Directory.Build.props" />
+  </Folder>
+  <Project Path="src/App/CoffeeBean.csproj" />
+</Solution>

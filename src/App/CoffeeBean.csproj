@@ -1,17 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net462</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
-    <Platforms>x86</Platforms>
-    <ApplicationIcon>Icon\icon.ico</ApplicationIcon>
-    <StartupObject>CoffeeBean.EntryPoint</StartupObject>
+    <ApplicationIcon>$(BuildFolder)Icons\iconEnabled.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PolySharp" Version="1.13.2">
+    <PackageReference Include="PolySharp" Version="1.16.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -23,7 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Icon\icon.ico" />
+    <SvgIcon Include="Icons\*.svg" />
+    <Resource Include="@(SvgIcon->'$(BuildFolder)Icons\%(Filename).ico')" Link="Icons\%(Filename).ico" Visible="false" />
   </ItemGroup>
 
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(DesignTimeBuild)' != 'true'">
+    <Exec Command="powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File &quot;$(ProjectDir)GenerateIcoFilesFromSvg.ps1&quot; -BuildFolder &quot;$(BuildFolder)\.&quot;" />
+  </Target>
 </Project>
